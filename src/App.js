@@ -17,21 +17,22 @@ class App extends Component {
     console.log(amount);
     console.log(amount);
     if (isNaN(amount)) {
-      console.log("Not a number");
+      console.log('isNan()',amount,name);
     } else if (amount <= 0){
+      console.log('amount <=0',amount,name);
       amount === 0 ? console.log('Must deposit more than $0') : console.log("You can't deposit a negative number")
-    } else if(amount){
-      console.log(amount);
-      let amount = +amount
+    } else if (amount !== undefined) {
+      console.log('amount is defined',amount,name);
+
       let newBalance = 0
       if(name==="Checking"){
-        newBalance = this.state.checkingBalance + amount
+        newBalance = this.state.checkingBalance + +amount
         console.log(newBalance, 'checking');
         this.setState({
           checkingBalance: newBalance
         })
       } else {
-        newBalance = this.state.savingBalance + amount
+        newBalance = this.state.savingBalance + +amount
         console.log(newBalance, 'saving');
         this.setState({
           savingBalance: newBalance
@@ -44,29 +45,44 @@ class App extends Component {
   handleWithdrawalClick = (e, amount, name) => {
     e.preventDefault();
     if (isNaN(amount)) {
-      console.log("Not a number");
+      console.log('isNan()',amount,name);
     } else if (amount <= 0){
+      console.log('amount <=0',amount,name);
       amount === 0 ? console.log('Must deposit more than $0') : console.log("You can't deposit a negative number")
-    } else {
-      let amount = +amount
+    } else if (amount){
+      console.log('amount is defined',amount,name);
       let newBalance = 0
+
       if(name==="Checking"){
-        newBalance = +this.state.checkingBalance - amount
+        newBalance = +this.state.checkingBalance - +amount
         this.setState({
-          checkingbalance: newBalance
+          checkingBalance: newBalance
         })
       } else {
-        newBalance = +this.state.savingBalance - amount
+        newBalance = +this.state.savingBalance - +amount
         this.setState({
-          savingbalance: newBalance
+          savingBalance: newBalance
         })
       }
       // this.refs.amount.value = '';
     }
   }
-
+  transferLogic = (e,amount,name) => {
+    let transferTo = ''
+    name === 'Checking' ? transferTo = "saving" : transferTo = "checking"
+    this.handleWithdrawalClick(e,amount,name)
+    let balance = `${transferTo}Balance`
+    let currentBalance = this.state[balance]
+    this.setState({
+      [balance]: currentBalance + +amount
+    })
+  }
   transfer = (e, amount, name) => {
-
+    if (name === 'Saving'){
+      this.transferLogic(e,amount,name)
+    } else {
+      this.transferLogic(e,amount,name)
+    }
   }
 
   render() {
